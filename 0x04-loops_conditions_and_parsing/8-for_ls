@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#script that displays content of current directory in alist format where only name after #dash is displayed
+
+list=$(ls)
+
+for i in $list
+do
+
+          echo "$i" | cut -d'-' -f2
+done
