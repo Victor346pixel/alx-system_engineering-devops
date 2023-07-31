@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ $(id -u) -ne 0 ]]; then
+    echo "This script requires root privileges to access all processes. Please run as root."
+    exit 1
+fi
+
+# Use a single find command to find all processes containing the word "bash"
+find /proc -maxdepth 2 -type f -name "cmdline" -exec grep -Hzl "bash" {} + | while read -r pid_file; do
+    pid=${pid_file%/*} # Extract PID from the file path
+
+    # Get the process name from the cmdline file and replace null characters with spaces
+    process_name=$(tr '\0' ' ' < "$pid/cmdline")
+
+    echo "PID: ${pid##*/}  Process Name: $process_name"
+done
+
