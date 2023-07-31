@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#script that displays a list of currently running processes
+
+
+process_list=$(ps ax -o pid,ppid,user,pgid,%cpu,%mem,vsz,rss,tty,stat,start,time,command)
+
+echo "process Hierarchy:"
+pstree -p
+
+echo "user-oriented Format:"
+echo "PID PPID USER  PGID   %CPU  %MEM   VSZ   RSS  TTY  STAT   STARTED      TIME      COMMAND"
+echo "$1-list_your_processes"  |  awk '{ printf "%-5s%-6s%-8s%-6s%-6s%-6s%-8s%-8s%-6s%-6s%-15s%-12s%s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13 }'
