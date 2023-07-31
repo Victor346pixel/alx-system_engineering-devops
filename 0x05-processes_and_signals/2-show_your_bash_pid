@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#shellcheck  disable=SC2009
+
+# Using ps and grep to find the Bash process PID
+ps_output=$(ps -ef | grep bash)
+
+# Displaying lines containing the "bash" word
+echo "$ps_output" | grep bash
