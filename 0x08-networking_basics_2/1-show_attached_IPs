@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Get all active IPv4 IPs using the "ip" command and filter out the loopback address
+active_ips=$(ip -o -4 addr show | awk '{print $4}' | cut -d'/' -f1 | grep -v '^127\.0\.0\.1$')
+
+# Display the active IPv4 IPs
+echo "$active_ips"
+

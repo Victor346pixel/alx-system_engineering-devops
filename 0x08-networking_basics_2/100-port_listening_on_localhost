@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Function to handle incoming data
+handle_data() {
+    while read -r line; do
+        echo "$line"
+    done
+}
+
+# Main script
+echo "Starting my script."
+
+# Listen on port 98 and pass incoming data to handle_data function
+nc -l localhost 98 | handle_data
+
