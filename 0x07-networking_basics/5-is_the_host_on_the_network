@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 {IP_ADDRESS}"
+  exit 1
+fi
+
+ip_address=$1
+ping_count=5
+
+ping -c $ping_count $ip_address
+

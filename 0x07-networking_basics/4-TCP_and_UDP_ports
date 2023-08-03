@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Check if the script is run as root
+if [[ $EUID -ne 0 ]]; then
+	    echo "This script must be run as root (sudo)!"
+	        exit 1
+fi
+
+# Command to get listening sockets
+netstat_output=$(netstat -tuln)
+
+# Function to get process name from PID
+get_process_name() {
+	    local pid=$1
+	        local name=$(ps -p $pid -o comm=)
+		    echo "$name"
+	    }
+
+    # Function to print listening sockets with process information
+    print_listening_sockets() {
+	        local protocol=$1
+		    local port=$2
+		        local pid=$3
+			    local program_name=$4
+
+			        printf "%-4s %-23s %-23s %-10s %-10s\n" "$protocol" "0.0.0.0:$port" "*:*" "LISTEN" "$pid/$program_name"
+			}
+
+		# Printing header
+		echo "Active Internet connections (only servers)"
+		echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+
+		# Process netstat output to extract listening sockets
+		while IFS= read -r line; do
+			    protocol=$(echo "$line" | awk '{print $1}')
+			        local_addr=$(echo "$line" | awk '{print $4}')
+				    port=$(echo "$local_addr" | awk -F':' '{print $NF}')
+				        pid=$(echo "$line" | awk '{print $NF}' | awk -F'/' '{print $1}')
+					    program_name=$(get_process_name $pid)
+
+					        if [[ $line == *LISTEN* ]]; then
+							        print_listening_sockets "$protocol" "$port" "$pid" "$program_name"
+								    fi
+							    done <<< "$netstat_output"
+
