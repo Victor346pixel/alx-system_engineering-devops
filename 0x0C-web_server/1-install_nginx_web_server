@@ -1,37 +1,18 @@
 #!/usr/bin/env bash
-# Configures a new ubuntu machine by installing
-# Nginx where it should be listening on port 80
-# Serve a page that would return a Hello World string
-#
-# colors
-blue='\e[1;34m'
-brown='\e[0;33m'
-green='\e[1;32m'
-reset='\033[0m'
+# Commands to install Nginx on Web-Sever-01
 
-echo -e "${blue}Updating and installing ${brown}Nginx${blue}.${reset}\n"
-sudo apt-get update -y -qq && \
-	 sudo apt-get install nginx -y
+# Updating Packages before making Installations
+sudo apt-get update
+sudo apt-get -y install nginx
 
-echo -e "\n${blue}Setting up some minor stuff.${reset}\n"
-
-# starting nginx service
-sudo service nginx start
-
-# allowing nginx on firewall
+# Configuring the Uncomplicated Firewall (UFW) to allow incoming traffic for the Nginx HTTP service
 sudo ufw allow 'Nginx HTTP'
 
-# Give the user ownership to website files for easy editing
-sudo chown -R "$USER":"$USER" /var/www/html
-sudo chmod -R 755 /var/www
+# Creating an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-# Backup default index
-cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
+# Testing Nginx configurations for Syntax errors
+sudo nginx -t
 
-# Creating new index
-echo -e "Hello World!" | dd status=none of=/var/www/html/index.nginx-debian.html
-
-# Restarting nginx
-sudo service nginx restart
-
-echo -e "\n${green}Completed.${reset} ✅\n"
+# Restarting Nginx
+sudo service nginx start
